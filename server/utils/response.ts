@@ -1,23 +1,42 @@
-import { H3Response } from '~~/types/h3response';
+import { setResponseStatus } from 'h3';
 
-export function errorResponse(error: Partial<H3Response>): H3Response {
-	return {
-		statusCode: error.statusCode ?? 500,
-		statusMessage: error.statusMessage ?? 'internal server error',
-		message: error.message ?? 'An unexpected error occurred',
+interface ApiResponse<T> {
+	statusCode: number;
+	message: string;
+	data?: T;
+	meta?: {
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
 	};
 }
 
-export function successResponse<T = any>({
-	data,
-	message = 'Success',
-	total = 0,
-}: Partial<H3Response<T>> = {}): H3Response<T> {
-	return {
-		statusCode: 200,
-		statusMessage: 'ok',
-		message,
-		total,
-		data,
-	};
+export function sendResponse<T>(
+	event: any,
+	statusCode: number,
+	message: string,
+	data?: T,
+	meta?: ApiResponse<T>['meta'],
+): ApiResponse<T> {
+	setResponseStatus(event, statusCode);
+	return { statusCode, message, data, meta };
+}
+
+export function sendSuccess<T>(
+	event: any,
+	data: T,
+	message = 'Request successful',
+	statusCode = 200,
+	meta?: ApiResponse<T>['meta'],
+): ApiResponse<T> {
+	return sendResponse(event, statusCode, message, data, meta);
+}
+
+export function sendErrorResponse(
+	event: any,
+	statusCode: number,
+	message: string,
+): ApiResponse<never> {
+	return sendResponse(event, statusCode, message);
 }
