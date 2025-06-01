@@ -5,7 +5,11 @@ export default defineEventHandler(async (event) => {
 	const course = await readBody<Course>(event);
 
 	if (!course) {
-		throw new Error('No course passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Course is required',
+		});
 	}
 
 	await prisma.course.create({

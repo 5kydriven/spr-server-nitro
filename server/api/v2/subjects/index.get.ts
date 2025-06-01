@@ -1,6 +1,6 @@
 import { prisma } from '~~/prisma/client';
 
-export default defineEventHandler(async (event) => {
+export default wrapHandler(async (event) => {
 	const { page = '1', limit = '10', search = '' } = getQuery(event);
 
 	const pageNumber = parseInt(page as string);
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
 		}),
 	]);
 
-	return sendSuccess({
+	return {
 		event,
 		statusCode: 200,
 		data: subjects,
@@ -41,5 +41,5 @@ export default defineEventHandler(async (event) => {
 			limit: limitNumber,
 			totalPages: Math.ceil(total / limitNumber),
 		},
-	});
+	};
 });

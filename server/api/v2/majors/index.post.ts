@@ -1,11 +1,15 @@
 import { Major } from '@prisma/client';
 import { prisma } from '~~/prisma/client';
 
-export default defineEventHandler(async (event) => {
+export default wrapHandler(async (event) => {
 	const major = await readBody<Major>(event);
 
 	if (!major) {
-		throw new Error('No major passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Major is required',
+		});
 	}
 
 	await prisma.major.create({
@@ -15,9 +19,9 @@ export default defineEventHandler(async (event) => {
 		},
 	});
 
-	return sendSuccess({
+	return {
 		event,
 		message: 'Major created successfully',
 		statusCode: 201,
-	});
+	};
 });

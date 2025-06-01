@@ -1,11 +1,15 @@
 import { Subject } from '@prisma/client';
 import { prisma } from '~~/prisma/client';
 
-export default defineEventHandler(async (event) => {
+export default wrapHandler(async (event) => {
 	const subject = await readBody<Subject>(event);
 
 	if (!subject) {
-		throw new Error('No subject passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Subject is required',
+		});
 	}
 
 	await prisma.subject.create({
@@ -16,9 +20,9 @@ export default defineEventHandler(async (event) => {
 		},
 	});
 
-	return sendSuccess({
+	return {
 		event,
 		message: 'Subject created successfully',
 		statusCode: 201,
-	});
+	};
 });

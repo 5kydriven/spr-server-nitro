@@ -1,10 +1,10 @@
 import { prisma } from '~~/prisma/client';
 
-export default defineEventHandler(async (event) => {
+export default wrapHandler(async (event) => {
 	const id = getRouterParam(event, 'id');
 
 	if (!id) {
-		return createError({
+		throw createError({
 			statusCode: 400,
 			statusMessage: 'Bad Request',
 			message: 'ID is required',
@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
 		},
 	});
 
-	return sendSuccess({
+	return {
 		event,
 		message: 'Subject deleted successfully',
 		data,
-	});
+	};
 });
