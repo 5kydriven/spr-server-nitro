@@ -6,14 +6,22 @@ export default wrapHandler(async (event) => {
 	const subject = await readBody<Subject>(event);
 
 	if (!subject) {
-		throw new Error('No subject passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Subject is required',
+		});
 	}
 
 	const docRef = db.collection('subjects').doc(subject.code);
 
 	const existing = await docRef.get();
 	if (existing.exists) {
-		throw new Error('Subject with this code already exists');
+		throw createError({
+			statusCode: 409,
+			statusMessage: 'Conflict',
+			message: `Subject with code ${subject.code} already exists`,
+		});
 	}
 
 	const subjectData: Subject = {
@@ -23,10 +31,10 @@ export default wrapHandler(async (event) => {
 
 	await docRef.set(subjectData);
 
-	return sendSuccess({
+	return {
 		event,
 		data: subjectData,
 		message: 'Successfully created subject',
 		statusCode: 201,
-	});
+	};
 });

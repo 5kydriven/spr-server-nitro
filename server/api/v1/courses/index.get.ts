@@ -27,7 +27,7 @@ export default wrapHandler(async (event) => {
 				...doc.data(),
 		  })) as Course[]);
 
-	return sendSuccess({
+	return {
 		event,
 		data: products,
 		message: 'Courses retrieved successfully',
@@ -37,5 +37,5 @@ export default wrapHandler(async (event) => {
 			limit: limitNum,
 			totalPages: Math.ceil(total / limitNum),
 		},
-	});
+	};
 });

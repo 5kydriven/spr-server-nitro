@@ -6,14 +6,22 @@ export default wrapHandler(async (event) => {
 	const course = await readBody<Course>(event);
 
 	if (!course) {
-		throw new Error('No course passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Course is required',
+		});
 	}
 
 	const docRef = db.collection('courses').doc(course.abbreviation);
 
 	const existing = await docRef.get();
 	if (existing.exists) {
-		throw new Error('Course with this abbreviation already exists');
+		throw createError({
+			statusCode: 409,
+			statusMessage: 'Conflict',
+			message: `Course with abbreviation ${course.abbreviation} already exists`,
+		});
 	}
 
 	const courseData: Course = {
@@ -23,10 +31,10 @@ export default wrapHandler(async (event) => {
 
 	await docRef.set(courseData);
 
-	return sendSuccess({
+	return {
 		event,
 		data: courseData,
 		message: 'Successfully created course',
 		statusCode: 201,
-	});
+	};
 });

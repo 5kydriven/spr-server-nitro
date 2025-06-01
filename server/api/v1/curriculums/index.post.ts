@@ -6,17 +6,25 @@ export default wrapHandler(async (event) => {
 	const curriculum = await readBody<Curriculum>(event);
 
 	if (!curriculum) {
-		throw new Error('No curriculum passed');
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Curriculum is required',
+		});
 	}
 
 	const docRef = await db
 		.collection('curriculums')
 		.add({ ...curriculum, createdAt: new Date().toISOString() });
 
-	return sendSuccess(
+	return {
 		event,
-		{ uid: docRef.id, ...curriculum, createdAt: new Date().toISOString() },
-		'Successfully created curriculum',
-		201,
-	);
+		data: {
+			uid: docRef.id,
+			...curriculum,
+			createdAt: new Date().toISOString(),
+		},
+		message: 'Successfully created curriculum',
+		statusCode: 201,
+	};
 });

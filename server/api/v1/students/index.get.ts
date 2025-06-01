@@ -1,6 +1,5 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import { Student } from '~/types/student';
-import { sendSuccess } from '~/utils/response';
 import { wrapHandler } from '~/utils/wrapHandler';
 
 export default wrapHandler(async (event) => {
@@ -32,7 +31,7 @@ export default wrapHandler(async (event) => {
 				...doc.data(),
 		  })) as Student[]);
 
-	return sendSuccess({
+	return {
 		event,
 		data: students,
 		message: 'Students retrieved successfully',
@@ -42,5 +41,5 @@ export default wrapHandler(async (event) => {
 			limit: limitNum,
 			totalPages: Math.ceil(total / limitNum),
 		},
-	});
+	};
 });
