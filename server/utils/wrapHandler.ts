@@ -8,7 +8,7 @@ export function wrapHandler<T>(handler: Handler<T>) {
 	return defineEventHandler(async (event) => {
 		try {
 			const result = await handler(event);
-			return sendSuccess(event, result);
+			return sendSuccess({ ...(result as any) });
 		} catch (error) {
 			return handleError(event, error);
 		}

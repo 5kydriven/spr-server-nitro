@@ -1,4 +1,4 @@
-// import { H3Event } from 'h3';
+import { H3Event } from 'h3';
 
 // export default defineEventHandler(async (event: H3Event) => {
 // 	const { to, subject, message } = await readBody(event);
@@ -22,6 +22,27 @@
 // 		return successResponse({ message: 'Email sent successfully!', data: info });
 // 	} catch (error: any) {
 // 		console.log(error);
-// 		return errorResponse(error);
+// 		return sendErrorResponse(error);
 // 	}
 // });
+
+export default wrapHandler(async (event: H3Event) => {
+	const { to, subject, message } = await readBody(event);
+
+	if (!to) {
+		createError({
+			statusCode: 400,
+			statusMessage: 'bad request',
+			message: 'Email is required!',
+		});
+	}
+
+	const info = await transporter.sendMail({
+		to: to,
+		subject: subject,
+		text: message,
+		// html: '<b>Hello world?</b>',
+	});
+
+	return sendSuccess(event, info, 'Successfully sent email', 201);
+});

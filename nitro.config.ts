@@ -3,8 +3,8 @@ export default defineNitroConfig({
 	srcDir: 'server',
 	compatibilityDate: '2025-02-27',
 	runtimeConfig: {
-		// email: process.env.NITRO_EMAIL,
-		// password: process.env.NITRO_PASSWORD,
+		email: process.env.NITRO_EMAIL,
+		password: process.env.NITRO_PASSWORD,
 		type: process.env.NITRO_TYPE,
 		projectId: process.env.NITRO_PROJECT_ID,
 		privateKeyId: process.env.NITRO_PRIVATE_KEY_ID,
@@ -17,6 +17,6 @@ export default defineNitroConfig({
 		clientX509CertUrl: process.env.NITRO_CLIENT_X509_CERT_URL,
 		universeDomain: process.env.NITRO_UNIVERSE_DOMAIN,
 		supabaseUrl: process.env.NITRO_SUPABASE_URL,
-		supabaseKey: process.env.NITRO_SUPABASE_KEY,
+		supabaseAnonKey: process.env.NITRO_SUPABASE_ANON_KEY,
 	},
 });

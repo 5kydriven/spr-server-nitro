@@ -23,13 +23,19 @@ export function sendResponse<T>(
 	return { statusCode, message, data, meta };
 }
 
-export function sendSuccess<T>(
-	event: any,
-	data: T,
+export function sendSuccess<T>({
+	event,
+	data,
 	message = 'Request successful',
 	statusCode = 200,
-	meta?: ApiResponse<T>['meta'],
-): ApiResponse<T> {
+	meta,
+}: {
+	event: any;
+	data?: T;
+	message?: string;
+	statusCode?: number;
+	meta?: ApiResponse<T>['meta'];
+}): ApiResponse<T> {
 	return sendResponse(event, statusCode, message, data, meta);
 }
 

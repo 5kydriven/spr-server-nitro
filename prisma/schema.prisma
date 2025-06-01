@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("NITRO_DATABASE_URL")
+  directUrl = env("NITRO_DIRECT_URL")
+}
+
+model Course {
+  id           String   @id @default(uuid())
+  name         String
+  abbreviation String
+  createdAt    DateTime @default(now())
+
+  curriculums Curriculum[]
+  majors      Major[]
+  subjects    SubjectOffering[]
+}
+
+model Major {
+  id       String @id @default(uuid())
+  name     String
+  courseId String
+
+  course      Course       @relation(fields: [courseId], references: [id])
+  enrollments Enrollment[]
+}
+
+model Curriculum {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  courseId    String
+  createdAt   DateTime @default(now())
+
+  course      Course            @relation(fields: [courseId], references: [id])
+  enrollments Enrollment[]
+  subjects    SubjectOffering[]
+}
+
+model Subject {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  unit      Int
+  createdAt DateTime @default(now())
+
+  grades    Grade[]
+  offerings SubjectOffering[]
+}
+
+model SubjectOffering {
+  id           String  @id @default(uuid())
+  subjectId    String
+  curriculumId String
+  courseId     String? // optional in case we need it
+  yearLevel    Int
+  semester     Int
+
+  subject    Subject    @relation(fields: [subjectId], references: [id])
+  curriculum Curriculum @relation(fields: [curriculumId], references: [id])
+  course     Course?    @relation(fields: [courseId], references: [id])
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  studentNo String   @unique
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id           String   @id @default(uuid())
+  studentId    String
+  curriculumId String
+  majorId      String?
+  academicYear String
+  semester     Int
+  enrolledAt   DateTime @default(now())
+
+  student    Student    @relation(fields: [studentId], references: [id])
+  curriculum Curriculum @relation(fields: [curriculumId], references: [id])
+  major      Major?     @relation(fields: [majorId], references: [id])
+  grades     Grade[]
+}
+
+model Grade {
+  id           String  @id @default(uuid())
+  enrollmentId String
+  subjectId    String
+  grade        Float?
+  remarks      String?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  subject    Subject    @relation(fields: [subjectId], references: [id])
+}
