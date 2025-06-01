@@ -27,10 +27,15 @@ export default wrapHandler(async (event) => {
 				...doc.data(),
 		  })) as Course[]);
 
-	return sendSuccess(event, products, 'Courses retrieved successfully', 200, {
-		total,
-		page: pageNum,
-		limit: limitNum,
-		totalPages: Math.ceil(total / limitNum),
+	return sendSuccess({
+		event,
+		data: products,
+		message: 'Courses retrieved successfully',
+		meta: {
+			total,
+			page: pageNum,
+			limit: limitNum,
+			totalPages: Math.ceil(total / limitNum),
+		},
 	});
 });

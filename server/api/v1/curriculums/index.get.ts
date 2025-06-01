@@ -27,16 +27,15 @@ export default wrapHandler(async (event) => {
 				...doc.data(),
 		  })) as Curriculum[]);
 
-	return sendSuccess(
+	return sendSuccess({
 		event,
-		products,
-		'Curriculums retrieved successfully',
-		200,
-		{
+		data: products,
+		message: 'Curriculums retrieved successfully',
+		meta: {
 			total,
 			page: pageNum,
 			limit: limitNum,
 			totalPages: Math.ceil(total / limitNum),
 		},
-	);
+	});
 });

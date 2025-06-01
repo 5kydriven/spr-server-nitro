@@ -13,10 +13,10 @@ export default wrapHandler(async (event) => {
 		.collection('users')
 		.add({ ...student, createdAt: new Date().toISOString(), role: 'student' });
 
-	return sendSuccess(
+	return sendSuccess({
 		event,
-		{ uid: docRef.id, ...student, createdAt: new Date().toISOString() },
-		'Successfully created student',
-		201,
-	);
+		data: { uid: docRef.id, ...student, createdAt: new Date().toISOString() },
+		message: 'Successfully created student',
+		statusCode: 201,
+	});
 });

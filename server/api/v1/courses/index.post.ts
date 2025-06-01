@@ -23,5 +23,10 @@ export default wrapHandler(async (event) => {
 
 	await docRef.set(courseData);
 
-	return sendSuccess(event, courseData, 'Successfully created course', 201);
+	return sendSuccess({
+		event,
+		data: courseData,
+		message: 'Successfully created course',
+		statusCode: 201,
+	});
 });

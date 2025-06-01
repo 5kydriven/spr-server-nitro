@@ -44,5 +44,5 @@ export default wrapHandler(async (event: H3Event) => {
 		// html: '<b>Hello world?</b>',
 	});
 
-	return sendSuccess(event, info, 'Successfully sent email', 201);
+	return sendSuccess({ event, data: info, message: 'Successfully sent email' });
 });

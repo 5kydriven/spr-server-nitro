@@ -23,5 +23,10 @@ export default wrapHandler(async (event) => {
 
 	await docRef.set(subjectData);
 
-	return sendSuccess(event, subjectData, 'Successfully created subject', 201);
+	return sendSuccess({
+		event,
+		data: subjectData,
+		message: 'Successfully created subject',
+		statusCode: 201,
+	});
 });
