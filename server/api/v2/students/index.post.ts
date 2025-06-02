@@ -27,7 +27,7 @@ export default wrapHandler(async (event) => {
 
 	const supabaseUser = data.user;
 
-	await prisma.user.create({
+	const result = await prisma.user.create({
 		data: {
 			id: supabaseUser.id,
 			email: student.email,
@@ -48,5 +48,6 @@ export default wrapHandler(async (event) => {
 		event,
 		message: 'Signup successfully',
 		statusCode: 201,
+		data: result,
 	};
 });

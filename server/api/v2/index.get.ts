@@ -1,6 +1,4 @@
-import { H3Event } from 'h3';
-
-export default defineEventHandler((event: H3Event) => {
+export default defineEventHandler((event) => {
 	// List of available API endpoints
 	const apis = [
 		{
