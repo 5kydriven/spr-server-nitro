@@ -22,6 +22,7 @@ export default wrapHandler(async (event) => {
 	});
 
 	if (error) {
+		console.error('Supabase createUser error:', error);
 		throw createError({ statusCode: 400, statusMessage: error.message });
 	}
 

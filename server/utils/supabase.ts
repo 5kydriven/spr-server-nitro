@@ -5,5 +5,5 @@ const config = useRuntimeConfig();
 
 export const supabase = createClient<Database>(
 	config.supabaseUrl,
-	config.supabaseAnonKey,
+	config.supabaseRoleKey,
 );
