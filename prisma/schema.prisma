@@ -8,6 +8,48 @@ datasource db {
   directUrl = env("NITRO_DIRECT_URL")
 }
 
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      Role     @default(STUDENT)
+  createdAt DateTime @default(now())
+
+  student Student?
+}
+
+model Student {
+  id                 String         @id @default(uuid())
+  userId             String         @unique
+  firstName          String
+  middleName         String
+  lastName           String
+  sex                String?
+  civilStatus        String?
+  mobileNumber       String?
+  birthPlace         String?
+  birthDate          String?
+  parentName         String?
+  parentMobileNumber String?
+  address            String?
+  status             ApprovalStatus @default(PENDING)
+  createdAt          DateTime       @default(now())
+
+  user        User         @relation(fields: [userId], references: [id])
+  enrollments Enrollment[]
+}
+
 model Course {
   id           String   @id @default(uuid())
   name         String
@@ -16,7 +58,6 @@ model Course {
 
   curriculums Curriculum[]
   majors      Major[]
-  subjects    SubjectOffering[]
 }
 
 model Major {
@@ -52,37 +93,26 @@ model Subject {
 }
 
 model SubjectOffering {
-  id           String  @id @default(uuid())
+  id           String @id @default(uuid())
   subjectId    String
   curriculumId String
-  courseId     String? // optional in case we need it
-  yearLevel    Int
-  semester     Int
+  yearLevel    Int?
+  semester     Int?
 
   subject    Subject    @relation(fields: [subjectId], references: [id])
   curriculum Curriculum @relation(fields: [curriculumId], references: [id])
-  course     Course?    @relation(fields: [courseId], references: [id])
-}
-
-model Student {
-  id        String   @id @default(uuid())
-  studentNo String   @unique
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-
-  enrollments Enrollment[]
 }
 
 model Enrollment {
-  id           String   @id @default(uuid())
-  studentId    String
-  curriculumId String
-  majorId      String?
-  academicYear String
-  semester     Int
-  enrolledAt   DateTime @default(now())
+  id             String   @id @default(uuid())
+  studentId      String
+  curriculumId   String
+  majorId        String?
+  academicYear   String
+  semester       String
+  generalAverage String?
+  gwaUrl         String?
+  createdAt      DateTime @default(now())
 
   student    Student    @relation(fields: [studentId], references: [id])
   curriculum Curriculum @relation(fields: [curriculumId], references: [id])
@@ -94,7 +124,7 @@ model Grade {
   id           String  @id @default(uuid())
   enrollmentId String
   subjectId    String
-  grade        Float?
+  grade        String?
   remarks      String?
 
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id])

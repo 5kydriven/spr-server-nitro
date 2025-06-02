@@ -1,8 +1,6 @@
 import initFirebase from '~/utils/initFirebase';
 
-export default defineNitroPlugin((nuxtapp) => {
-	const config = useRuntimeConfig();
-
+export default defineNitroPlugin(() => {
 	const firebaseConfig = {
 		type: 'service_account',
 		project_id: 'capstone-9a90b',
@@ -20,6 +18,5 @@ export default defineNitroPlugin((nuxtapp) => {
 		universe_domain: 'googleapis.com',
 	};
 
-	console.log(firebaseConfig);
 	initFirebase(firebaseConfig);
 });

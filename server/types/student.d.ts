@@ -1,11 +1,11 @@
 import { Curriculum } from './curriculum';
 
 export interface Student {
-	uid?: string;
+	id?: string;
 	email?: string;
 	firstName?: string;
 	middleName?: string;
-	lasttName?: string;
+	lastName?: string;
 	role?: string;
 	address?: string;
 	birthDate?: string;
