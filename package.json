@@ -1,20 +1,21 @@
 {
-  "private": true,
-  "scripts": {
-    "build": "nitro build",
-    "dev": "nitro dev",
-    "prepare": "nitro prepare",
-    "preview": "node .output/server/index.mjs"
-  },
-  "devDependencies": {
-    "@types/nodemailer": "^6.4.17",
-    "nitropack": "latest"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.8.2",
-    "@supabase/supabase-js": "^2.49.8",
-    "firebase-admin": "^13.2.0",
-    "nodemailer": "^6.10.0",
-    "prisma": "^6.8.2"
-  }
+	"private": true,
+	"scripts": {
+		"build": "nitro build",
+		"dev": "nitro dev",
+		"prepare": "nitro prepare",
+		"preview": "node .output/server/index.mjs",
+		"postinstall": "prisma generate"
+	},
+	"devDependencies": {
+		"@types/nodemailer": "^6.4.17",
+		"nitropack": "latest"
+	},
+	"dependencies": {
+		"@prisma/client": "^6.8.2",
+		"@supabase/supabase-js": "^2.49.8",
+		"firebase-admin": "^13.2.0",
+		"nodemailer": "^6.10.0",
+		"prisma": "^6.8.2"
+	}
 }
