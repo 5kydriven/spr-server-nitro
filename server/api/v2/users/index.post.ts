@@ -1,9 +1,7 @@
-import { getAuth } from 'firebase-admin/auth';
 import { prisma } from '~~/prisma/client';
 
 export default wrapHandler(async (event) => {
 	const student = await readBody(event);
-	const auth = getAuth();
 
 	if (!student) {
 		throw createError({
@@ -16,15 +14,9 @@ export default wrapHandler(async (event) => {
 	const name =
 		student.firstName + ' ' + student.middleName + ' ' + student.lastName;
 
-	const user = await auth.createUser({
-		email: student.email,
-		password: student.password,
-		displayName: name,
-	});
-
 	const result = await prisma.user.create({
 		data: {
-			id: user.uid,
+			id: student.id,
 			email: student.email,
 			name,
 			role: 'STUDENT',

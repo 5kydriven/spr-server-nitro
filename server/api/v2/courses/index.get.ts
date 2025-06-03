@@ -15,6 +15,14 @@ export default defineEventHandler(async (event) => {
 					{ abbreviation: { contains: search as string, mode: 'insensitive' } },
 				],
 			},
+			include: {
+				majors: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+			},
 			skip,
 			take: limitNumber,
 			orderBy: {

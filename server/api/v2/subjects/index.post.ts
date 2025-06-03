@@ -17,6 +17,7 @@ export default wrapHandler(async (event) => {
 			name: subject.name.toLowerCase(),
 			code: subject.code.toLowerCase(),
 			unit: subject.unit,
+			
 		},
 	});
 

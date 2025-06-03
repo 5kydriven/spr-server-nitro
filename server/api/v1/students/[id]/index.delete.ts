@@ -1,8 +1,8 @@
-import { firestore } from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 
 export default wrapHandler(async (event) => {
-	const db = firestore();
+	const db = getFirestore();
 	const id = getRouterParam(event, 'id');
 	const auth = getAuth();
 

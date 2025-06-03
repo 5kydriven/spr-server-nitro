@@ -1,5 +1,4 @@
 import { getFirestore } from 'firebase-admin/firestore';
-import { sendSuccess } from '~/utils/response';
 import { wrapHandler } from '~/utils/wrapHandler';
 import { Subject } from '~/types/subject';
 
