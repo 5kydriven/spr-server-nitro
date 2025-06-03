@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
 		search = '',
 		course,
 		major,
-		academicYear, // fixed typo from acedemicYear
 	} = getQuery(event);
 
 	const pageNumber = parseInt(page as string);
@@ -26,7 +25,7 @@ export default defineEventHandler(async (event) => {
 		],
 	};
 
-	if (course || major || academicYear) {
+	if (course || major) {
 		filterConditions.AND.push({
 			enrollments: {
 				some: {
@@ -45,11 +44,6 @@ export default defineEventHandler(async (event) => {
 									major: {
 										name: { equals: major as string, mode: 'insensitive' },
 									},
-							  }
-							: {},
-						academicYear
-							? {
-									academicYear: { equals: academicYear as string },
 							  }
 							: {},
 					],
