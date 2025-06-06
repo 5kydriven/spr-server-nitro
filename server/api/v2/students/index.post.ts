@@ -13,7 +13,9 @@ export default wrapHandler(async (event) => {
 
 	const file1 = formData.get('file1') as File;
 	const file2 = formData.get('file2') as File;
-
+	const studentJson = formData.get('student') as string;
+	const student = JSON.parse(studentJson);
+	console.log(student);
 	const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
 	let file1Url = '';

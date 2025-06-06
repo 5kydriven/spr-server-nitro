@@ -2,60 +2,105 @@ import { prisma } from '~~/prisma/client';
 
 export default wrapHandler(async (event) => {
 	const formData = await readFormData(event);
-	const studentId = formData.get('studentId') as string;
-	const curriculumId = formData.get('curriculumId') as string;
-	const majorId = formData.get('majorId') as string;
-	const academicYear = formData.get('academicYear') as string;
-	const semester = formData.get('semester') as string;
-	const generalAverage = formData.get('generalAverage') as string;
-	const file = formData.get('file') as File;
 
 	if (!formData) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Bad Request',
-			message: 'Data is required',
+			message: 'Missing form data or ID',
 		});
 	}
 
-	const timestamp = new Date().toISOString().replace(/[-:.]/g, ''); // Remove any characters that could cause issues in filenames
-	const uniqueFileName = `payments/${timestamp}_${file.name}`;
+	const file1 = formData.get('file1') as File;
+	const file2 = formData.get('file2') as File;
+	const studentJson = formData.get('student') as string;
+	const student = JSON.parse(studentJson);
+	console.log(student);
+	const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
-	const { data, error } = await supabase.storage
-		.from('images')
-		.upload(uniqueFileName, file, {
-			contentType: file.type,
-			upsert: true,
-		});
+	let file1Url = '';
+	let file2Url = '';
 
-	if (error) {
+	if (file1) {
+		const uniqueFile1Name = `forms/${timestamp}_${file1.name}`;
+		const { error } = await supabase.storage
+			.from('images')
+			.upload(uniqueFile1Name, file1, {
+				contentType: file1.type,
+				upsert: true,
+			});
+		if (error) {
+			throw createError({
+				statusCode: 500,
+				message: `File1 upload error: ${error.message}`,
+			});
+		}
+		file1Url = supabase.storage.from('images').getPublicUrl(uniqueFile1Name)
+			.data.publicUrl;
+	}
+
+	if (file2) {
+		const uniqueFile2Name = `forms/${timestamp}_${file2.name}`;
+		const { error } = await supabase.storage
+			.from('images')
+			.upload(uniqueFile2Name, file2, {
+				contentType: file2.type,
+				upsert: true,
+			});
+		if (error) {
+			throw createError({
+				statusCode: 500,
+				message: `File2 upload error: ${error.message}`,
+			});
+		}
+		file2Url = supabase.storage.from('images').getPublicUrl(uniqueFile2Name)
+			.data.publicUrl;
+	}
+
+	const curriculum = await prisma.curriculum.findFirst({
+		where: {
+			courseId: formData.get('courseId')?.toString(),
+			majorId: formData.get('majorId')?.toString(),
+		},
+	});
+
+	if (!curriculum) {
 		throw createError({
-			statusCode: 500,
-			statusMessage: 'Internal Server Error',
-			message: `Failed to upload file: ${error.message}`,
+			statusCode: 404,
+			statusMessage: 'Curriculum not found for selected course and major',
 		});
 	}
 
-	const { data: publicUrlData } = supabase.storage
-		.from('images')
-		.getPublicUrl(`cards/${file.name}`);
-
-	const res = await prisma.enrollment.create({
+	const enrollment = await prisma.enrollment.create({
 		data: {
-			studentId,
-			curriculumId,
-			majorId,
-			academicYear,
-			semester,
-			generalAverage,
-			gwaUrl: publicUrlData.publicUrl,
+			academicYear: formData.get('academicYear')?.toString(),
+			semester: formData.get('semester')?.toString(),
+			curriculumId: curriculum.id,
+			studentId: formData.get('curriculumId')?.toString(),
+			generalAverage: formData.get('generalAverage')?.toString(),
+			gwaUrl1: file1Url,
+			gwaUrl2: file2Url,
+		},
+		include: {
+			student: true,
+		},
+	});
+
+	const studentRes = await prisma.student.update({
+		where: { id: enrollment.studentId },
+		data: {
+			...student,
+		},
+		include: {
+			enrollment: {
+				include: { curriculum: { include: { course: true } } },
+			},
 		},
 	});
 
 	return {
 		event,
-		message: 'Enrollment created successfully',
-		statusCode: 201,
-		data: res,
+		message: 'Successfully updated student and uploaded files.',
+		data: studentRes,
 	};
 });

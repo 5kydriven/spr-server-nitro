@@ -22,6 +22,12 @@ export default defineEventHandler(async (event) => {
 						name: true,
 					},
 				},
+				curriculums: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
 			},
 			skip,
 			take: limitNumber,
