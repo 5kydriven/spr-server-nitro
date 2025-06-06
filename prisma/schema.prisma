@@ -20,7 +20,7 @@ enum ApprovalStatus {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id
   name      String
   email     String   @unique
   role      Role     @default(STUDENT)
@@ -39,7 +39,7 @@ model Student {
   civilStatus        String?
   mobileNumber       String?
   birthPlace         String?
-  birthDate          DateTime? // Changed from String
+  birthDate          DateTime?
   parentName         String?
   parentMobileNumber String?
   address            String?
@@ -47,7 +47,7 @@ model Student {
   createdAt          DateTime       @default(now())
 
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  enrollment Enrollment? // Only one enrollment per student
+  enrollment Enrollment?
 }
 
 model Course {

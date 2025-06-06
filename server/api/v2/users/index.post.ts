@@ -16,18 +16,18 @@ export default wrapHandler(async (event) => {
 
 	const result = await prisma.user.create({
 		data: {
-			id: student.id,
+			id: student.studentId,
 			email: student.email,
 			name,
 			role: 'STUDENT',
-			student: {
-				create: {
-					status: 'PENDING',
-					firstName: student.firstName,
-					middleName: student.middleName,
-					lastName: student.lastName,
-				},
-			},
+			// student: {
+			// 	create: {
+			// 		status: 'PENDING',
+			// 		firstName: student.firstName,
+			// 		middleName: student.middleName,
+			// 		lastName: student.lastName,
+			// 	},
+			// },
 		},
 	});
 

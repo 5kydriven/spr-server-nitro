@@ -1,37 +1,89 @@
-// import { getAuth } from 'firebase-admin/auth';
-// import { prisma } from '~~/prisma/client';
+import { prisma } from '~~/prisma/client';
 
-// export default wrapHandler(async (event) => {
-// 	const student = await readBody(event);
-// 	const auth = getAuth();
+export default wrapHandler(async (event) => {
+	const formData = await readFormData(event);
 
-// 	if (!student) {
-// 		throw createError({
-// 			statusCode: 400,
-// 			statusMessage: 'Bad Request',
-// 			message: 'No data provided',
-// 		});
-// 	}
+	if (!formData) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Bad Request',
+			message: 'Missing form data or ID',
+		});
+	}
 
-// 	const name =
-// 		student.firstName + ' ' + student.middleName + ' ' + student.lastName;
+	const file1 = formData.get('file1') as File;
+	const file2 = formData.get('file2') as File;
 
-// 	const user = await auth.createUser({
-// 		email: student.email,
-// 		password: student.password,
-// 		displayName: name,
-// 	});
+	const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
-// 	const result = await prisma.student.create({
-// 		data: {
+	let file1Url = '';
+	let file2Url = '';
 
-// 		},
-// 	});
+	if (file1) {
+		const uniqueFile1Name = `forms/${timestamp}_${file1.name}`;
+		const { error } = await supabase.storage
+			.from('images')
+			.upload(uniqueFile1Name, file1, {
+				contentType: file1.type,
+				upsert: true,
+			});
+		if (error) {
+			throw createError({
+				statusCode: 500,
+				message: `File1 upload error: ${error.message}`,
+			});
+		}
+		file1Url = supabase.storage.from('images').getPublicUrl(uniqueFile1Name)
+			.data.publicUrl;
+	}
 
-// 	return {
-// 		event,
-// 		message: 'Signup successfully',
-// 		statusCode: 201,
-// 		data: result,
-// 	};
-// });
+	if (file2) {
+		const uniqueFile2Name = `forms/${timestamp}_${file2.name}`;
+		const { error } = await supabase.storage
+			.from('images')
+			.upload(uniqueFile2Name, file2, {
+				contentType: file2.type,
+				upsert: true,
+			});
+		if (error) {
+			throw createError({
+				statusCode: 500,
+				message: `File2 upload error: ${error.message}`,
+			});
+		}
+		file2Url = supabase.storage.from('images').getPublicUrl(uniqueFile2Name)
+			.data.publicUrl;
+	}
+
+	await prisma.student.update({
+		where: { userId: formData.get('userId').toString() },
+		data: {
+			sex: formData.get('sex')?.toString(),
+			birthDate: formData.get('birthDate')?.toString(),
+			address: formData.get('address')?.toString(),
+			birthPlace: formData.get('birthPlace')?.toString(),
+			civilStatus: formData.get('civilStatus')?.toString(),
+			parentMobileNumber: formData.get('parentMobileNumber')?.toString(),
+			parentName: formData.get('parentName')?.toString(),
+			mobileNumber: formData.get('mobileNumber')?.toString(),
+			firstName: formData.get('firstName')?.toString(),
+			middleName: formData.get('middleName')?.toString(),
+			lastName: formData.get('lastName')?.toString(),
+			enrollment: {
+				create: {
+					academicYear: formData.get('academicYear')?.toString(),
+					semester: formData.get('semester')?.toString(),
+					curriculumId: formData.get('curriculumId')?.toString(),
+					generalAverage: formData.get('generalAverage')?.toString(),
+					gwaUrl1: file1Url,
+					gwaUrl2: file2Url,
+				},
+			},
+		},
+	});
+
+	return {
+		event,
+		message: 'Successfully updated student and uploaded files.',
+	};
+});

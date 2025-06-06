@@ -20,22 +20,34 @@ export default wrapHandler(async (event) => {
 		});
 	}
 
-	// await prisma.student.update({
-	// 	where: { userId: id },
-	// 	data: {
-	// 		sex: student.sex,
-	// 		birthDate: student.birthDate,
-	// 		address: student.address,
-	// 		birthPlace: student.birthPlace,
-	// 		civilStatus: student.civilStatus,
-	// 		parentMobileNumber: student.parentMobileNumber,
-	// 		parentName: student.parentName,
-	// 		mobileNumber: student.mobileNumber,
-	// 		firstName: student.firstName,
-	// 		middleName: student.middleName,
-	// 		lastName: student.lastName,
-	// 	},
-	// });
+	await prisma.student.update({
+		where: { userId: id },
+		data: {
+			sex: student.sex,
+			birthDate: student.birthDate,
+			address: student.address,
+			birthPlace: student.birthPlace,
+			civilStatus: student.civilStatus,
+			parentMobileNumber: student.parentMobileNumber,
+			parentName: student.parentName,
+			mobileNumber: student.mobileNumber,
+			firstName: student.firstName,
+			middleName: student.middleName,
+			lastName: student.lastName,
+			status: student.status,
+			enrollment: {
+				update: {
+					where: { id: student.enrollmentID },
+					data: {
+						academicYear: student.academicYear,
+						semester: student.semester,
+						curriculumId: student.curriculumId,
+						generalAverage: student.generalAverage,
+					},
+				},
+			},
+		},
+	});
 
 	return {
 		event,
