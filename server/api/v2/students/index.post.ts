@@ -24,18 +24,7 @@
 
 // 	const result = await prisma.student.create({
 // 		data: {
-// 			id: user.uid,
-// 			email: student.email,
-// 			name,
-// 			role: 'STUDENT',
-// 			student: {
-// 				create: {
-// 					status: 'PENDING',
-// 					firstName: student.firstName,
-// 					middleName: student.middleName,
-// 					lastName: student.lastName,
-// 				},
-// 			},
+
 // 		},
 // 	});
 

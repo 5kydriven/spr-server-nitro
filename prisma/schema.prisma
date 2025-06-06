@@ -39,15 +39,15 @@ model Student {
   civilStatus        String?
   mobileNumber       String?
   birthPlace         String?
-  birthDate          String?
+  birthDate          DateTime? // Changed from String
   parentName         String?
   parentMobileNumber String?
   address            String?
   status             ApprovalStatus @default(PENDING)
   createdAt          DateTime       @default(now())
 
-  user        User         @relation(fields: [userId], references: [id])
-  enrollments Enrollment[]
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollment Enrollment? // Only one enrollment per student
 }
 
 model Course {
@@ -65,7 +65,7 @@ model Major {
   name     String
   courseId String
 
-  course      Course       @relation(fields: [courseId], references: [id])
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   enrollments Enrollment[]
 }
 
@@ -105,13 +105,14 @@ model SubjectOffering {
 
 model Enrollment {
   id             String   @id @default(uuid())
-  studentId      String
+  studentId      String   @unique
   curriculumId   String
   majorId        String?
   academicYear   String
   semester       String
   generalAverage String?
-  gwaUrl         String?
+  gwaUrl1        String?
+  gwaUrl2        String?
   createdAt      DateTime @default(now())
 
   student    Student    @relation(fields: [studentId], references: [id])

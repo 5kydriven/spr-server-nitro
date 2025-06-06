@@ -1,7 +1,10 @@
+import { Major } from './major';
+
 export interface Course {
-	uid: string;
-	name: string;
-	majors: string[];
-	abbreviation: string;
-	createdAt: string;
+	uid?: string;
+	id?: string;
+	name?: string;
+	majors?: Major[];
+	abbreviation?: string;
+	createdAt?: string;
 }

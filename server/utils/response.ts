@@ -39,10 +39,14 @@ export function sendSuccess<T>({
 	return sendResponse(event, statusCode, message, data, meta);
 }
 
-export function sendErrorResponse(
-	event: any,
-	statusCode: number,
-	message: string,
-): ApiResponse<never> {
+export function sendErrorResponse({
+	event,
+	statusCode,
+	message,
+}: {
+	event: any;
+	statusCode: number;
+	message: string;
+}): ApiResponse<never> {
 	return sendResponse(event, statusCode, message);
 }
