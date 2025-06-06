@@ -21,7 +21,7 @@ export default wrapHandler(async (event) => {
 	}
 
 	await prisma.student.update({
-		where: { userId: id },
+		where: { id },
 		data: {
 			sex: student.sex,
 			birthDate: student.birthDate,

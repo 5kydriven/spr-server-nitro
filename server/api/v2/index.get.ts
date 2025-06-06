@@ -11,7 +11,11 @@ export default defineEventHandler((event) => {
 		},
 		{
 			path: '/api/v2/subjects',
-			methods: ['post', 'id:delete', 'get'],
+			methods: ['post', 'id:delete', 'get', 'id:put'],
+		},
+		{
+			path: '/api/v2/subjects/export',
+			methods: ['get'],
 		},
 		{
 			path: '/api/v2/course',
