@@ -27,7 +27,7 @@ export default defineEventHandler((event) => {
 		},
 		{
 			path: '/api/v2/curriculums',
-			methods: ['post', 'id:delete', 'get'],
+			methods: ['post', 'get'],
 		},
 	];
 
