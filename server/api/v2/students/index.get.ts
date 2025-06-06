@@ -61,15 +61,8 @@ export default defineEventHandler(async (event) => {
 				lastName: 'asc',
 			},
 			include: {
-				enrollments: {
-					include: {
-						major: true,
-						curriculum: {
-							include: {
-								course: true,
-							},
-						},
-					},
+				enrollment: {
+					include: { curriculum: { include: { course: true, major: true } } },
 				},
 			},
 		}),
