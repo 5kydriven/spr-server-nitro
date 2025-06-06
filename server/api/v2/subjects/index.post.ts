@@ -16,8 +16,7 @@ export default wrapHandler(async (event) => {
 		data: {
 			name: subject.name.toLowerCase(),
 			code: subject.code.toLowerCase(),
-			unit: subject.unit,
-			
+			unit: Number(subject.unit),
 		},
 	});
 
