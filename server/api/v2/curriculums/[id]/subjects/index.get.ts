@@ -13,6 +13,9 @@ export default wrapHandler(async (event) => {
 
 	const subjects = await prisma.subjectOffering.findMany({
 		where: { curriculumId },
+		include: {
+			subject: true,
+		},
 	});
 
 	return {

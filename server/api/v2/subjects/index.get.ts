@@ -1,11 +1,11 @@
 import { prisma } from '~~/prisma/client';
 
 export default wrapHandler(async (event) => {
-	const { page = '1', limit = '10', search = '' } = getQuery(event);
+	const { page = '0', limit = '10', search = '' } = getQuery(event);
 
 	const pageNumber = parseInt(page as string);
 	const limitNumber = parseInt(limit as string);
-	const skip = (pageNumber - 1) * limitNumber;
+	const skip = pageNumber * limitNumber;
 
 	const [subjects, total] = await prisma.$transaction([
 		prisma.subject.findMany({
