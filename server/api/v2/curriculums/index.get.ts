@@ -10,7 +10,22 @@ export default defineEventHandler(async (event) => {
 	const [curriculums, total] = await prisma.$transaction([
 		prisma.curriculum.findMany({
 			where: {
-				OR: [{ name: { contains: search as string, mode: 'insensitive' } }],
+				OR: [
+					{
+						name: {
+							contains: search as string,
+							mode: 'insensitive',
+						},
+					},
+					{
+						course: {
+							name: {
+								contains: search as string,
+								mode: 'insensitive',
+							},
+						},
+					},
+				],
 			},
 			skip,
 			take: limitNumber,
@@ -25,7 +40,22 @@ export default defineEventHandler(async (event) => {
 		}),
 		prisma.curriculum.count({
 			where: {
-				OR: [{ name: { contains: search as string, mode: 'insensitive' } }],
+				OR: [
+					{
+						name: {
+							contains: search as string,
+							mode: 'insensitive',
+						},
+					},
+					{
+						course: {
+							name: {
+								contains: search as string,
+								mode: 'insensitive',
+							},
+						},
+					},
+				],
 			},
 		}),
 	]);
