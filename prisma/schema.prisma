@@ -79,7 +79,7 @@ model Curriculum {
   majorId     String?
   createdAt   DateTime @default(now())
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   major  Major? @relation(fields: [majorId], references: [id])
 
   enrollments Enrollment[]
@@ -113,7 +113,7 @@ model SubjectOffering {
 model Enrollment {
   id             String   @id @default(uuid())
   studentId      String   @unique
-  curriculumId   String
+  curriculumId   String?
   majorId        String?
   academicYear   String
   semester       String
@@ -122,9 +122,9 @@ model Enrollment {
   gwaUrl2        String?
   createdAt      DateTime @default(now())
 
-  student    Student    @relation(fields: [studentId], references: [id])
-  curriculum Curriculum @relation(fields: [curriculumId], references: [id])
-  major      Major?     @relation(fields: [majorId], references: [id])
+  student    Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  curriculum Curriculum? @relation(fields: [curriculumId], references: [id], onDelete: SetNull)
+  major      Major?      @relation(fields: [majorId], references: [id])
   grades     Grade[]
 }
 

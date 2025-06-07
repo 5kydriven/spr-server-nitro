@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
 			name: curriculum.name.toLowerCase(),
 			description: curriculum.description,
 			courseId: curriculum.courseId,
+			majorId: curriculum.majorId,
 		},
 	});
 

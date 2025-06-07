@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
 				course: { include: { majors: true } },
 				subjects: true,
 				enrollments: true,
+				major: true,
 			},
 		}),
 		prisma.curriculum.count({
