@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
 		search = '',
 		course,
 		major,
+		status,
 	} = getQuery(event);
 
 	const pageNumber = parseInt(page as string);
@@ -24,6 +25,12 @@ export default defineEventHandler(async (event) => {
 			},
 		],
 	};
+
+	if (status) {
+		filterConditions.AND.push({
+			status: { equals: status as string },
+		});
+	}
 
 	if (course || major) {
 		filterConditions.AND.push({
