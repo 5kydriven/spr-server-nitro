@@ -7,7 +7,7 @@ export default wrapHandler(async (event) => {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Bad Request',
-			message: 'Missing form data or ID',
+			message: 'Missing form data',
 		});
 	}
 
@@ -76,7 +76,7 @@ export default wrapHandler(async (event) => {
 			academicYear: formData.get('academicYear')?.toString(),
 			semester: formData.get('semester')?.toString(),
 			curriculumId: curriculum.id,
-			studentId: formData.get('curriculumId')?.toString(),
+			studentId: formData.get('id')?.toString(),
 			generalAverage: formData.get('generalAverage')?.toString(),
 			gwaUrl1: file1Url,
 			gwaUrl2: file2Url,
