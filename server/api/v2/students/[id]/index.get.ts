@@ -12,11 +12,14 @@ export default wrapHandler(async (event) => {
 	}
 
 	const result = await prisma.student.findUnique({
-		where: { id },
+		where: { userId: id },
 		include: {
 			enrollment: {
 				include: {
-					curriculum: { include: { course: { include: { majors: true } } } },
+					major: true,
+					curriculum: {
+						include: { course: true },
+					},
 				},
 			},
 		},
