@@ -1,4 +1,4 @@
-import { Curriculum } from './curriculum';
+import { Curriculum, Enrollment } from '@prisma/client';
 
 export interface Student {
 	id?: string;
@@ -20,5 +20,7 @@ export interface Student {
 	parentName?: string;
 	parentMobileNumber?: string;
 	curriculum?: Curriculum;
+	enrollment?: Enrollment;
 	createdAt?: string;
+	mobileNumber?: string;
 }

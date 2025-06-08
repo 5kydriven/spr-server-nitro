@@ -1,3 +1,4 @@
+import { Student } from '~/types/student';
 import { prisma } from '~~/prisma/client';
 
 export default wrapHandler(async (event) => {
@@ -14,10 +15,9 @@ export default wrapHandler(async (event) => {
 	const file1 = formData.get('file1') as File;
 	const file2 = formData.get('file2') as File;
 	const studentJson = formData.get('student') as string;
-	const student = JSON.parse(studentJson);
-	console.log(student);
+	const student = JSON.parse(studentJson) as Student;
 	const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-
+	console.log(student);
 	let file1Url = '';
 	let file2Url = '';
 
@@ -59,8 +59,8 @@ export default wrapHandler(async (event) => {
 
 	const curriculum = await prisma.curriculum.findFirst({
 		where: {
-			courseId: formData.get('courseId')?.toString(),
-			majorId: formData.get('majorId')?.toString(),
+			courseId: student.curriculum.courseId,
+			majorId: student.curriculum.majorId,
 		},
 	});
 
@@ -73,13 +73,20 @@ export default wrapHandler(async (event) => {
 
 	const enrollment = await prisma.enrollment.create({
 		data: {
-			academicYear: formData.get('academicYear')?.toString(),
-			semester: formData.get('semester')?.toString(),
-			curriculumId: curriculum.id,
-			studentId: formData.get('id')?.toString(),
-			generalAverage: formData.get('generalAverage')?.toString(),
+			academicYear: student.enrollment.academicYear,
+			semester: student.enrollment.semester,
+			generalAverage: student.enrollment.generalAverage,
 			gwaUrl1: file1Url,
 			gwaUrl2: file2Url,
+			curriculum: {
+				connect: { id: curriculum.id },
+			},
+			student: {
+				connect: { id: student.id },
+			},
+			major: {
+				connect: { id: curriculum.majorId },
+			},
 		},
 		include: {
 			student: true,
@@ -89,7 +96,15 @@ export default wrapHandler(async (event) => {
 	const studentRes = await prisma.student.update({
 		where: { id: enrollment.studentId },
 		data: {
-			...student,
+			sex: student.sex.toLowerCase(),
+			address: student.address.toLowerCase(),
+			birthDate: student.birthDate,
+			birthPlace: student.birthPlace.toLowerCase(),
+			civilStatus: student.civilStatus.toLowerCase(),
+			mobileNumber: student.mobileNumber,
+			parentMobileNumber: student.parentMobileNumber,
+			parentName: student.parentName.toLowerCase(),
+			isEnrolled: true,
 		},
 		include: {
 			enrollment: {
